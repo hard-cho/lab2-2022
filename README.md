@@ -63,13 +63,20 @@
 
 ![переименовали и перетащили в окно иерархии](https://user-images.githubusercontent.com/74662720/195044314-b5eb3713-b95d-4ded-ac90-20406053e89d.png)
 
-10) Создать Animation Controller.
+10) Создать Animation Controller с названием EnemyCTRL.
 
 ![вот так выглядит окно с конролем анимации](https://user-images.githubusercontent.com/74662720/195077144-6ff05191-a05f-440f-a05b-dc0b9028e405.png)
 
-12) Настроить.
-13) Проверить работу анимации.
-14) Создать сферу Egg, которая будет драконьим яйцом. Настроить параметр Scale на значения: 1; 1.5; 1.
+12) В папке Animations найти анимацию полёта, создать её дубликат. Дубликат перетащить в окно анимации EnemyCTRL.
+
+![в окне анимации](https://user-images.githubusercontent.com/74662720/195078636-103d9419-f2bf-471e-b2fb-502bcb550e61.png)
+
+13) Подключить EnemyCTRL к объекту Enemy.
+
+![подключили анимацию](https://user-images.githubusercontent.com/74662720/195078742-eff93f4f-daa5-42d6-87b2-b2c71c2cfc89.png)
+
+15) Проверить работу анимации.
+16) Создать сферу Egg, которая будет драконьим яйцом. Настроить параметр Scale на значения: 1; 1.5; 1.
 
 ![создали яйцо](https://user-images.githubusercontent.com/74662720/195044889-67a9b3ff-8aad-40bb-8066-b75a1e90fc86.png)
 
@@ -105,31 +112,92 @@
 
 ![создали префаб из щита](https://user-images.githubusercontent.com/74662720/195076913-56ca0ea2-16e5-4567-a8ef-f5ecbfe9a826.png)
 
-32) Настроить камеру и игровую область
-33) Написать скрипт для передвижения дракона и подключить его к Enemy.
-34) Установить значения в инспекторе.
-35) В поле Dragon Egg Prefab вложить префаб яйца.
-36) Изменить скрипт. Добавить код в метод Start и создать новый метод DropEgg
-37) Добавить пакет из Unity Asset Store.
-38) Добавить плоскость Ground и настроить её.
-39) Создать скрипт DragonEgg и подключить его к Egg.
-40) Добавить к яйцу компонент Particle System. Настроить этот компонент.
-41) Включить свойство IsTrigger у объекта Ground.
-42) Создать скрипт DragonPicker и подключить его к камере.
-43) Удалить щит.
-44) Проверить, что всё получилось.
+32) Настроить камеру и игровую область.
+
+![настроили камеру и игровую область](https://user-images.githubusercontent.com/74662720/195079034-b6997a67-0b89-490d-b0d3-80e4a14b0264.png)
+
+34) Написать скрипт EnemyDragon для передвижения дракона и подключить его к Enemy.
+
+        using System.Collections;
+        using System.Collections.Generic;
+        using UnityEngine;
+
+        public class EnemyDragon : MonoBehaviour
+        {
+            public GameObject dragonEggPrefab;
+            public float speed = 1f;
+            public float timeBetweenEggDrops = 1f;
+            public float leftRightDistance = 10f;
+            public float chanceDirection = 0.1f;
+
+            // Start is called before the first frame update
+            void Start()
+            {
+                
+            }
+
+            // Update is called once per frame
+            void Update()
+            {
+                Vector3 pos = transform.position;
+                pos.x += speed * Time.deltaTime;
+                transform.position = pos;
+
+                if (pos.x < -leftRightDistance)
+                {
+                    speed = Mathf.Abs(speed);
+                }
+
+                if (pos.x > leftRightDistance)
+                {
+                    speed = -Mathf.Abs(speed);
+                }
+            }
+
+            private void FixedUpdate()
+            {
+                if (Random.value < chanceDirection)
+                {
+                    speed *= -1;
+                }
+            }
+        }
+
+36) Установить значения в окне Inspector.
+
+![прикрепили скрипт и поменяли значения](https://user-images.githubusercontent.com/74662720/195079134-6105a2df-c0dc-4bea-9029-17754faa0e64.png)
+
+37) В поле Dragon Egg Prefab вложить префаб яйца.
+
+![добавили префаб яйца](https://user-images.githubusercontent.com/74662720/195080334-c619dc89-988a-4a1c-afb7-cb3ea2bb6228.png)
+
+39) Изменить скрипт. Добавить код в метод Start и создать новый метод DropEgg
+
+            void Start()
+            {
+                Invoke("DropEgg", 2f);
+            }
+
+            void DropEgg()
+            {
+                Vector3 myVector = new Vector3(0.0f, 5.0f, 0.0f);
+                GameObject egg = Instantiate<GameObject>(dragonEggPrefab);
+                egg.transform.position = transform.position + myVector;
+                Invoke("DropEgg", timeBetweenEggDrops);
+            }
+41) По аналогии с пакетом Dragon for Boss Monster добавить и импортировать пакет Fire & Spell Effects из Unity Asset Store.
+
+![нашли ассет](https://user-images.githubusercontent.com/74662720/195080788-f1ef769f-087f-4f77-8883-9164c6fce903.png)
+
+43) Добавить плоскость Ground и настроить её.
+44) Создать скрипт DragonEgg и подключить его к Egg.
+45) Добавить к яйцу компонент Particle System. Настроить этот компонент.
+46) Включить свойство IsTrigger у объекта Ground.
+47) Создать скрипт DragonPicker и подключить его к камере.
+48) Удалить щит.
+49) Проверить, что всё получилось.
 
 Заполняем поля в консоли разработчика в Яндекс.Играх.
-
-
-## Задание 2
-### Продемонстрируйте на сцене в Unity следующее:
-
-
-## Задание 3
-### Реализуйте на сцене генерацию n кубиков. Число n вводится пользователем после старта сцены.
-Ход работы:
-
 
 ## Выводы
 
