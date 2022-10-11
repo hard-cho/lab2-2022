@@ -27,12 +27,10 @@
 - Данные о работе: название работы, фио, группа, выполненные задания.
 - Цель работы.
 - Задание 1.
-- Задание 2.
-- Задание 3.
 - Выводы.
 
 ## Цель работы
-Ознакомиться с основными функциями Unity и взаимодействием с объектами внутри редактора.
+Начать разработку игры Dragon Picker.
 
 ## Задание 1
 ### Пошагово выполнить каждый пункт раздела "ход работы" с описанием и примерами реализации задач по теме видео самостоятельной работы.
@@ -75,8 +73,7 @@
 
 ![подключили анимацию](https://user-images.githubusercontent.com/74662720/195078742-eff93f4f-daa5-42d6-87b2-b2c71c2cfc89.png)
 
-15) Проверить работу анимации.
-16) Создать сферу Egg, которая будет драконьим яйцом. Настроить параметр Scale на значения: 1; 1.5; 1.
+17) Создать сферу Egg, которая будет драконьим яйцом. Настроить параметр Scale на значения: 1; 1.5; 1.
 
 ![создали яйцо](https://user-images.githubusercontent.com/74662720/195044889-67a9b3ff-8aad-40bb-8066-b75a1e90fc86.png)
 
@@ -190,18 +187,106 @@
 ![нашли ассет](https://user-images.githubusercontent.com/74662720/195080788-f1ef769f-087f-4f77-8883-9164c6fce903.png)
 
 43) Добавить плоскость Ground и настроить её.
-44) Создать скрипт DragonEgg и подключить его к Egg.
-45) Добавить к яйцу компонент Particle System. Настроить этот компонент.
-46) Включить свойство IsTrigger у объекта Ground.
-47) Создать скрипт DragonPicker и подключить его к камере.
-48) Удалить щит.
-49) Проверить, что всё получилось.
 
-Заполняем поля в консоли разработчика в Яндекс.Играх.
+![добавили Plane и изменили параметры](https://user-images.githubusercontent.com/74662720/195084517-21da50b5-f76f-4d9a-9b35-56b5397fe48d.png)
+
+45) Добавить материал к плоскости.
+
+![добавили материал для plane](https://user-images.githubusercontent.com/74662720/195084646-3dc63f28-278b-4a42-bf66-a5aa509f3247.png)
+
+47) Создать скрипт DragonEgg и подключить его к Egg.
+
+        using System.Collections;
+        using System.Collections.Generic;
+        using UnityEngine;
+
+        public class DragonEgg : MonoBehaviour
+        {
+            public static float bottomY = -30f;
+            // Start is called before the first frame update
+            void Start()
+            {
+
+            }
+
+            private void OnTriggerEnter(Collider other)
+            {
+                ParticleSystem ps = GetComponent<ParticleSystem>();
+                var em = ps.emission;
+                em.enabled = true;
+
+                Renderer rend;
+                rend = GetComponent<Renderer>();
+                rend.enabled = false;
+            }
+
+            // Update is called once per frame
+            void Update()
+            {
+                if (transform.position.y < bottomY)
+                {
+                    Destroy(this.gameObject);
+                }
+            }
+        }
+
+49) Добавить к яйцу компонент Particle System. Настроить этот компонент.
+
+![настройка particle system 1](https://user-images.githubusercontent.com/74662720/195085474-edad5452-09f9-4ba1-88a8-6bbb16725409.png)
+
+![настройка particle system 2](https://user-images.githubusercontent.com/74662720/195085490-9f33f7c7-8b42-462d-9030-94f255850a83.png)
+
+51) В компоненте Mesh Collider включить свойство IsTrigger у объекта Ground.
+
+![добавили триггер для плоскости](https://user-images.githubusercontent.com/74662720/195085664-2ef534d1-b97e-48c3-9b31-27d1dd8c64ba.png)
+
+53) Создать скрипт DragonPicker и подключить его к камере.
+
+        using System.Collections;
+        using System.Collections.Generic;
+        using UnityEngine;
+
+        public class DragonPicker : MonoBehaviour
+        {
+            public GameObject energyShieldPrefab;
+            public int numEnergyShield = 3;
+            public float energyShieldBottomY = -6f;
+            public float energyShieldRadius = 1.5f;
+
+            void Start()
+            {
+                for (int i = 1; i <= numEnergyShield; i++)
+                {
+                    GameObject tShieldGo = Instantiate<GameObject>(energyShieldPrefab);
+                    tShieldGo.transform.position = new Vector3(0, energyShieldBottomY, 0);
+                    tShieldGo.transform.localScale = new Vector3(1*i, 1*i, 1*i);
+                }
+            }
+
+            void Update()
+            {
+
+            }
+        }
+
+55) В Energy Sheild Prefab добавить префаб щита.
+
+![Добавили скрипт и префаб в скрипт](https://user-images.githubusercontent.com/74662720/195087265-eab7b84d-abe6-418e-bf9e-3cdf4fe65a93.png)
+
+57) Удалить щит.
+58) Проверить, что всё получилось.
+
+https://user-images.githubusercontent.com/74662720/195087702-c046723c-66cb-4b85-80ff-1a8f0382f903.mp4
+
+
+## Заполняем поля в консоли разработчика в Яндекс.Играх.
+![поле 1](https://user-images.githubusercontent.com/74662720/195088213-694129d7-a455-4bb5-b51f-d2bf78b17658.png)
+![поле 2](https://user-images.githubusercontent.com/74662720/195088203-0d5be026-c403-413e-b0e2-c1f6f9068910.png)
+![поле 3](https://user-images.githubusercontent.com/74662720/195088208-22556906-4b70-48b7-9c63-89094e59e859.png)
 
 ## Выводы
 
-В ходе лабораторной работы были изучены некоторые функции платформы Unity, такие как создание 3D объектов, работа с компонентом RigidBody и создание скриптов. Также было выявлено различие между координатами родительского и дочернего объектов, создана генерация объектов, количество которых задано пользователем. 
+В ходе лабораторной работы была начата разработка игры Dragon Picker. Был создан дракона, который умеет летать и сбрасывать яйца. Были добавлены визуальные эффекты. Также были заполнены некоторые поля в черновике на Яндекс.Играх. В будущем продолжится заполнение черновика.
 
 
 ## Powered by
